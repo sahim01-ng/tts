@@ -10,12 +10,12 @@ function App() {
   const audioRef = useRef(null);
 
   // ✅ Updated API base URL with `/api`
-  const API_BASE_URL = 'https://tts-lcak.onrender.com/api';
+  const API_BASE_URL = 'https://tts-lcak.onrender.com';
 
   useEffect(() => {
     const fetchVoices = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/voices`);
+        const response = await fetch(`${API_BASE_URL}/api/voices`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -36,7 +36,7 @@ function App() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/generate-speech`, {
+      const response = await fetch(`${API_BASE_URL}/api/generate-speech`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
