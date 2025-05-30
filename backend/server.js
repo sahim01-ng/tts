@@ -7,21 +7,18 @@ const { IamAuthenticator } = require('ibm-watson/auth');
 
 // Load environment variables
 dotenv.config();
-console.log("Environment variables loaded.");
-console.log("IBM_TTS_API_KEY:", process.env.IBM_TTS_API_KEY ? "Loaded" : "Not Found");
-console.log("IBM_TTS_URL:", process.env.IBM_TTS_URL || "Not Found");
+console.log("IBM_TTS_API_KEY Loaded:", process.env.IBM_TTS_API_KEY ? "Yes" : "No");
+console.log("IBM_TTS_URL Loaded:", process.env.IBM_TTS_URL ? "Yes" : "No");
 
-// Initialize Express app
+// Initialize Express
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ CORS setup — allow only your Netlify frontend domain
+// ✅ CORS only for Netlify frontend
 app.use(cors({
-  origin: 'https://texttospeech3.netlify.app', // 🔁 replace this with your actual Netlify site URL
-  methods: ['GET', 'POST'],
+  origin: 'https://textospeech3.netlify.app',
 }));
 
-// Middleware
 app.use(express.json());
 
 // IBM Watson credentials
@@ -29,22 +26,22 @@ const IBM_TTS_API_KEY = process.env.IBM_TTS_API_KEY;
 const IBM_TTS_URL = process.env.IBM_TTS_URL;
 
 if (!IBM_TTS_API_KEY || !IBM_TTS_URL) {
-  console.error("❌ Missing IBM credentials. Set them in .env");
+  console.error("❌ IBM credentials missing in .env");
   process.exit(1);
 }
 
-// IBM TTS setup
+// Initialize Watson service
 const textToSpeech = new TextToSpeechV1({
   authenticator: new IamAuthenticator({ apikey: IBM_TTS_API_KEY }),
   serviceUrl: IBM_TTS_URL,
   disableSslVerification: false,
 });
 
-// ✅ Route: Get voices
+// ✅ GET /api/voices
 app.get('/api/voices', async (req, res) => {
   try {
     const { result } = await textToSpeech.listVoices();
-    const voiceList = result.voices.map((voice) => ({
+    const voiceList = result.voices.map(voice => ({
       voice_id: voice.name,
       name: voice.description,
       gender: voice.gender || 'N/A',
@@ -53,21 +50,22 @@ app.get('/api/voices', async (req, res) => {
     }));
     res.json(voiceList);
   } catch (error) {
-    console.error("❌ Error fetching voices:", error);
+    console.error("Error fetching voices:", error);
     res.status(500).json({ error: `Failed to fetch voices: ${error.message}` });
   }
 });
 
-// ✅ Route: Generate speech
+// ✅ POST /api/generate-speech
 app.post('/api/generate-speech', async (req, res) => {
   const { text, voice_id } = req.body;
+
   if (!text) {
     return res.status(400).json({ error: "Text is required for speech generation." });
   }
 
   try {
     const { result: audioStream } = await textToSpeech.synthesize({
-      text,
+      text: text,
       voice: voice_id || 'en-US_AllisonV3Voice',
       accept: 'audio/mpeg',
     });
@@ -79,12 +77,12 @@ app.post('/api/generate-speech', async (req, res) => {
 
     audioStream.pipe(res);
   } catch (error) {
-    console.error("❌ Error generating speech:", error);
+    console.error("Error generating speech:", error);
     res.status(500).json({ error: `Error generating speech: ${error.message}` });
   }
 });
 
-// ✅ Start server
+// Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`✅ Backend running on port ${PORT}`);
 });
