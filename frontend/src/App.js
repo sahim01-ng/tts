@@ -10,7 +10,7 @@ function App() {
   const audioRef = useRef(null);
 
   // ✅ Updated API base URL with `/api`
-  const API_BASE_URL = 'https://tts-lcak.onrender.com';
+  const API_BASE_URL = 'https://tts-921a.onrender.com';
 
   useEffect(() => {
   const fetchVoices = async () => {
