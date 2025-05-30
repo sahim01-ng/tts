@@ -11,7 +11,7 @@ function App() {
   const audioRef = useRef(null); // Reference to the HTML <audio> element
 
   // Base URL for your Node.js backend API
-  const API_BASE_URL = 'https://tts-lcak.onrender.com';
+  const API_BASE_URL = 'https://tts-lcak.onrender.com/api';
 
   // useEffect hook to fetch available voices when the component mounts
   useEffect(() => {
