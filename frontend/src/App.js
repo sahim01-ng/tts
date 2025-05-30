@@ -13,24 +13,23 @@ function App() {
   const API_BASE_URL = 'https://tts-lcak.onrender.com';
 
   useEffect(() => {
-    const fetchVoices = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/voices`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setVoices(data);
-        if (data.length > 0) {
-          setSelectedVoice(data[0].voice_id);
-        }
-      } catch (e) {
-        setError("Failed to fetch voices: " + e.message);
-        console.error("Error fetching voices:", e);
-      }
-    };
-    fetchVoices();
-  }, []);
+  const fetchVoices = async () => {
+    try {
+      const response = await fetch('https://tts-lcak.onrender.com/api/voices');
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      console.log("✅ Voices fetched:", data);
+      setVoices(data);
+      if (data.length > 0) setSelectedVoice(data[0].voice_id);
+    } catch (e) {
+      setError("Failed to fetch voices: " + e.message);
+      console.error("❌ Error fetching voices:", e);
+    }
+  };
+
+  fetchVoices();
+}, []);
+
 
   const handleGenerateSpeech = async () => {
     setLoading(true);
