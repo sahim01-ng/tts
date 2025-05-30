@@ -11,7 +11,7 @@ function App() {
   const audioRef = useRef(null); // Reference to the HTML <audio> element
 
   // Base URL for your Node.js backend API
-  const API_BASE_URL = 'http://127.0.0.1:5000/api';
+  const API_BASE_URL = 'https://tts-yl80.onrender.com';
 
   // useEffect hook to fetch available voices when the component mounts
   useEffect(() => {
