@@ -16,7 +16,18 @@ const PORT = process.env.PORT || 5000;
 
 // ✅ CORS only for Netlify frontend
 app.use(cors({
-  origin: 'https://textospeech3.netlify.app',
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'https://texttospeech3.netlify.app',
+      'http://localhost:3000' // if you use this for local testing
+    ];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST'],
 }));
 
 app.use(express.json());
